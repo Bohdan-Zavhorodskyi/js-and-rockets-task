@@ -1,42 +1,5 @@
 import { getPreviousFlights } from "./api";
-
-const ALLOWED_DATE = "2018";
-
-const filterFlightData = (flights) => {
-  if (!flights || !flights.length) {
-    return [];
-  }
-  const filteredData = flights.filter((flight) => {
-    const isAllowedDate = flight.launch_year === ALLOWED_DATE;
-
-    const reg = /NASA/g;
-    const payloads = flight.rocket.second_stage.payloads;
-    const isAllowedCustomer = !!payloads.filter((payload) =>
-      payload.customers.some((customer) => reg.test(customer))
-    ).length;
-
-    return isAllowedDate && isAllowedCustomer;
-  });
-
-  return filteredData;
-};
-
-const sortFlightData = (flights) => {
-  if (!flights || !flights.length) {
-    return [];
-  }
-  const sortedData = flights.sort((a, b) => {
-    const payloadsCountA = a.rocket.second_stage.payloads.length;
-    const payloadsCountB = b.rocket.second_stage.payloads.length;
-
-    return payloadsCountA < payloadsCountB
-      ? 1
-      : a.launch_date_utc > b.launch_date_utc
-      ? -1
-      : 1;
-  });
-  return sortedData;
-};
+import { filterFlightData, sortFlightData } from "./utils/arrayHelpers";
 
 export const prepareData = (flights) => {
   const filteredData = filterFlightData(flights);
